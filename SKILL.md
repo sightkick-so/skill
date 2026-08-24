@@ -1,18 +1,18 @@
 ---
-name: omnirank
+name: sightkick
 description: >-
-  Operate Omnirank, the SEO/AI-search (AEO) autopilot, for the user's website.
+  Operate Sightkick, the SEO/AI-search (AEO) autopilot, for the user's website.
   Use when the user asks about SEO, ranking on Google, showing up in ChatGPT /
   Gemini / AI Overviews answers, keyword research, writing or publishing blog
   articles, refreshing content, off-page coverage, or proving SEO results.
-  Works through Omnirank's remote MCP server — reads real Search Console +
+  Works through Sightkick's remote MCP server — reads real Search Console +
   AI-visibility data, writes and scores articles, accepts coverage work,
   steers the calendar and the writing dial, publishes.
 ---
 
-# Omnirank — operate SEO/AEO for your user
+# Sightkick — operate SEO/AEO for your user
 
-Omnirank is an autopilot: it researches keywords and buyer prompts, writes
+Sightkick is an autopilot: it researches keywords and buyer prompts, writes
 and publishes articles daily, tracks how AI engines answer those prompts,
 refreshes underperformers weekly, scans for off-page coverage opportunities,
 and proves results with Google Search Console. You are the second pair of
@@ -22,12 +22,12 @@ number is one tool call away; you never need to guess.
 
 ## Setup (once)
 
-The user needs an Omnirank account (app.omnirank.so — agent access is in
+The user needs an Sightkick account (app.sightkick.so — agent access is in
 every paid plan). Connect the remote MCP server:
 
-- **Claude Code:** `claude mcp add --transport http omnirank https://app.omnirank.so/mcp`
+- **Claude Code:** `claude mcp add --transport http sightkick https://app.sightkick.so/mcp`
 - **Claude Desktop / claude.ai / ChatGPT:** add a custom connector with URL
-  `https://app.omnirank.so/mcp`
+  `https://app.sightkick.so/mcp`
 - **Cursor / VS Code / others:** standard remote MCP config, same URL
 
 The OAuth consent binds the connection to ONE workspace (one website) — the
@@ -60,13 +60,13 @@ workspace on the consent screen.
 `workspace_get → writingMode` tells you where the dial sits; change it only
 when the user asks, via `autopilot_set_mode`:
 
-- **autopilot** — Omnirank writes, updates and publishes on schedule.
-- **drafts** — Omnirank writes and updates as CMS drafts; the user publishes.
-- **manual** — Omnirank plans and suggests only; nothing is written or
+- **autopilot** — Sightkick writes, updates and publishes on schedule.
+- **drafts** — Sightkick writes and updates as CMS drafts; the user publishes.
+- **manual** — Sightkick plans and suggests only; nothing is written or
   shipped automatically.
 
 The dial never gates YOUR tools — reads, edits, generation and orders run at
-every position; it governs only Omnirank's own initiative. `publish_article`
+every position; it governs only Sightkick's own initiative. `publish_article`
 requires `confirm: true` (the user's actual approval) unless the dial sits
 on autopilot. Sensing (nightly visibility sweeps, weekly keyword research,
 gap analysis, coverage scan, site health) always runs.
@@ -112,7 +112,7 @@ suggested → queued/todo → done/failed (or declined — declines are remember
   the calendar. Orders run at every dial position; on manual, a written
   article lands "ready" without publishing.
 
-**"Write it yourself" (BYO writing)** — you author, Omnirank provides rails:
+**"Write it yourself" (BYO writing)** — you author, Sightkick provides rails:
 
 1. `articles_create_draft` with clean semantic HTML (h2/h3 sections, short
    paragraphs, real links as sources — no styles, no scripts).
@@ -139,7 +139,7 @@ returns immediately; poll `articles_get`. Limits: 1 in flight, 5 manual/day.
 `articles_unqueue`, `autopilot_set_mode` (the dial), `connections_list`,
 `publish_article`.
 
-**"What's the method?"** — `guidance_search` returns Omnirank's methodology
+**"What's the method?"** — `guidance_search` returns Sightkick's methodology
 stance on any topic (refresh-over-new, answer-first structure, schema
 policy, anti-slop rules, gap actions). Consult it before planning or writing.
 
@@ -183,7 +183,7 @@ is the quality rails working, not a problem to hide.
 Numbers first, verdict second, plan third. Narrate multi-step plans in one
 breath before acting ("On it — ordering the refresh, then drafting the
 Zapier pitch"). Every act ends with its artifact: where the user can see it
-in Omnirank (board, calendar, article, live URL). State windows honestly
+in Sightkick (board, calendar, article, live URL). State windows honestly
 ("this week", "28 days"). No hedging, no metric soup — three numbers that
 matter beat ten that don't.
 
@@ -194,7 +194,7 @@ matter beat ten that don't.
   H2s should stand alone as questions/answers.
 - **Refresh beats new.** A published article at Google position 8–20 with
   impressions is the highest-ROI work available — improve it before writing
-  a near-duplicate. Omnirank's own refresh loop does one per week; you can
+  a near-duplicate. Sightkick's own refresh loop does one per week; you can
   do more via `articles_update` or order one via `actions_request`.
 - **No slop, ever.** Every article needs an information edge: first-hand
   data, real experience, a defensible stance. If a draft only restates what
@@ -219,7 +219,7 @@ matter beat ten that don't.
 
 If you're running with filesystem access (Claude Code and similar), keep
 your working context in this skill's `workspace/` directory — it's yours, it
-survives skill updates, and Omnirank never writes to it. Suggested files:
+survives skill updates, and Sightkick never writes to it. Suggested files:
 `context.md` (the site, audience, product facts you've learned), `log.md`
 (what you changed and why, dated), `hooks.md` (angles and framings that
 scored well). Read it at the start of a session; append as you learn.

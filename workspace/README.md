@@ -1,6 +1,6 @@
 # Your agent's workspace
 
-This directory belongs to YOUR agent, for THIS site. Omnirank never reads or
+This directory belongs to YOUR agent, for THIS site. Sightkick never reads or
 writes it, and skill updates never touch it. The skill instructs the agent
 to keep its working context here so it compounds across sessions:
 

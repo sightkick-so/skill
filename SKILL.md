@@ -14,7 +14,7 @@ description: >-
 
 Sightkick is an autopilot: it researches keywords and buyer prompts, writes
 and publishes articles daily, tracks how AI engines answer those prompts,
-refreshes underperformers weekly, scans for off-page coverage opportunities,
+scans for off-page coverage opportunities and runs outreach for them,
 and proves results with Google Search Console. You are the second pair of
 hands on the same machine: **the autopilot works the plan on a schedule; you
 work on demand — and both of you write to one ledger, attributed.** Every
@@ -22,7 +22,7 @@ number is one tool call away; you never need to guess.
 
 ## Setup (once)
 
-The user needs an Sightkick account (app.sightkick.so — agent access is in
+The user needs a Sightkick account (app.sightkick.so — agent access is in
 every paid plan). Connect the remote MCP server:
 
 - **Claude Code:** `claude mcp add --transport http sightkick https://app.sightkick.so/mcp`
@@ -42,7 +42,7 @@ workspace on the consent screen.
    asked for; do surface what you did.
 2. **Know what the autopilot covers before acting.** The plan is visible:
    `visibility_gaps` records what the analyzer already decided per losing
-   prompt (`created` / `boosted` / `refresh_candidate` / `offpage`),
+   prompt (`created` / `boosted` / `covered` / `offpage`),
    `calendar_get` shows what's scheduled, `actions_list` shows open work.
    Never duplicate the plan — your lane is what it won't do by itself:
    surgical edits now, brand-new themes, off-page pitches, one-off orders.
@@ -88,27 +88,30 @@ prompts the brand keeps losing, each with gapScore, competitors, the
 on-page/off-page verdict and what the autopilot already did about it.
 `visibility_sources` types the cited domains/URLs (owned / competitor /
 editorial / UGC) — the third-party surface worth winning. `visibility_prompts`
-lists the tracked panel per engine; `visibility_answer` fetches a stored AI
-answer verbatim. `keywords_list` is the keyword pool ranked by Opportunity
+lists the tracked panel (one row per prompt, window reading + gap verdict);
+`visibility_prompt` opens one prompt with its per-engine run list —
+that's where run ids come from; `visibility_answer` fetches one stored AI
+answer verbatim by run id. `keywords_list` is the keyword pool ranked by Opportunity
 (0–100); it has no text search — pull it (`limit: 500`) and filter yourself;
 check `unassignedOnly: true` before proposing new topics so you never
 cannibalize an existing target.
 
-**The work ledger (`actions_*`)** — `actions_list` is the shared queue:
-suggested → queued/todo → done/failed (or declined — declines are remembered
-60 days, so don't re-litigate them). Two card types matter to you:
+**The work ledger (`actions_*`)** — `actions_list` is the to-do list as
+the app shows it: one row per atomic thing with an owner. `owner: "you"`
+rows need a human (answer a cited Reddit thread, fix robots.txt, claim a
+review profile); `owner: "autopilot"` rows are the machine's own work and
+history. Verbs: `actions_complete` (the user, or you on their say-so, did
+it — pass a `result` note) and `actions_skip` (not this one; remembered 60
+days, so don't re-litigate). Reddit rows carry a reply draft — deliver it
+in chat, the user posts it. Never post to third-party sites yourself.
 
-- **Coverage cards** (source `sources` or `visibility_gap`, class
-  `offpage`): a page AI answers cite where competitors are named and the
-  user's brand is absent — the evidence is on the card (`url`, `domain`,
-  `citations`, `competitors`). The flow: `actions_accept` (it becomes the
-  user's to-do), then DRAFT THE PITCH yourself from the evidence (a short,
-  specific inclusion request the user sends from their own address). Never
-  send or post anything to third-party sites yourself — coverage work on
-  other people's pages is always the human's send.
+- **Coverage / outreach** lives in the Authority engine: `outreach_list`
+  is the off-page ledger — pages AI answers cite where competitors are
+  named and the brand is absent, ranked by Opportunity, plus threads in
+  flight and won/lost tallies. Sightkick's outreach engine drafts and
+  sends from the user's managed inbox; you read the ledger, you don't send.
 - **Orders** (`actions_request`): fire-and-forget jobs for the pipeline.
-  `kind: "refresh"` improves a published article ahead of the autopilot's
-  own weekly pick; `kind: "write"` creates and front-inserts an article on
+  `kind: "write"` creates and front-inserts an article on
   the calendar. Orders run at every dial position; on manual, a written
   article lands "ready" without publishing.
 
@@ -123,12 +126,15 @@ suggested → queued/todo → done/failed (or declined — declines are remember
    unsourced claims and thin rewrites.
 3. Set `metaTitle`/`metaDescription` via `articles_update`, then
    `articles_queue` (calendar) or `publish_article`.
-4. Wrote for a theme the panel doesn't track? `prompts_track` (panel max
-   25 — check `visibility_prompts` first for near-duplicates) so tonight's
-   sweep starts measuring it.
+4. Wrote for a theme the panel doesn't track? `prompts_track` (the panel
+   is capped at `workspace_get → promptLimit`; check `visibility_prompts`
+   first for near-duplicates, and free a slot with `prompts_retire` —
+   with the user's OK — when it's full) so tonight's sweep starts
+   measuring it.
 
-Editing existing articles: `articles_get` with `includeContent: true`, apply
-the change to the full HTML, send it back complete via `articles_update`.
+Editing existing articles: find it with `articles_list`, then `articles_get`
+with `includeContent: true`, apply the change to the full HTML, and send it
+back complete via `articles_update`.
 
 **"Let the pipeline write"** — `articles_generate` runs the staged pipeline
 (research → outline → draft → judge → revise → media). It takes minutes and
@@ -155,20 +161,23 @@ you."
 
 **Gap fixer** — "fix what you can."
 Read `visibility_gaps` and respect what's already covered (`created`/
-`boosted` = planned; `refresh_candidate` = the weekly loop's menu). Your
-moves: order the worst refresh now (`actions_request kind: refresh`, with a
-note telling the writer what to strengthen), write the uncovered theme
-yourself (BYO loop), accept + draft coverage pitches. Narrate the plan
-before acting; report each act with its artifact ("on your calendar for
-Thursday", "on your Actions board, By: Your agent").
+`boosted` = planned; `covered` = a published page already targets it). Your
+moves: strengthen the weak published page yourself (`articles_get` →
+edit → `articles_score` → `articles_update` → `publish_article` to push the
+update in place), write the uncovered theme (BYO loop) or order it
+(`actions_request kind: write`, with a note telling the writer what to
+cover), and read `outreach_list` for the third-party pages worth winning.
+Narrate the plan before acting; report each act with its artifact ("on
+your calendar for Thursday", "in your activity feed, By: Your agent").
 
 **Coverage pitch** — "get me into the pages AI cites."
-`actions_list` for open coverage cards (the Tuesday scan refills them).
-Per card: `actions_accept`, then draft the pitch from the card's evidence —
-name the page's actual topic, the competitors it lists, and the one-line
-reason the user's product belongs there (pull facts from `workspace_get`
-and the user's own words, never invented claims). Deliver the draft in chat
-for the user to send; they mark the card done.
+`outreach_list` for the open prospects (the weekly scan refills them). With
+the Authority engine on, Sightkick drafts and sends the pitches itself —
+read the ledger and report threads in flight and wins. With it off, draft
+the pitch in chat from the prospect's evidence — name the page's actual
+topic, the competitors it lists, and the one-line reason the user's product
+belongs there (facts from `workspace_get` and the user's own words, never
+invented claims) — for the user to send from their own address.
 
 **Proof report** — "is this working?"
 `metrics_gsc(rangeDays: 28)` + `visibility_summary(days: 30)` +

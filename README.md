@@ -26,7 +26,7 @@ Cursor) can:
 
 The skill is the manual; the hands are Sightkick's remote MCP server.
 
-1. Get an Sightkick account at [app.sightkick.so](https://app.sightkick.so)
+1. Get a Sightkick account at [app.sightkick.so](https://app.sightkick.so)
    (agent access is included in every plan).
 2. Connect the MCP — e.g. for Claude Code:
 

@@ -37,7 +37,7 @@ The skill is the manual; the hands are Sightkick's remote MCP server.
 3. Install this skill so your agent knows how to use it well:
 
    ```sh
-   npx skills add sightkick-so/sightkick-skill
+   npx skills add sightkick-so/skill
    ```
 
 The OAuth consent binds the connection to one workspace (one website).

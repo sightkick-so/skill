@@ -96,6 +96,18 @@ answer verbatim by run id. `list_keywords` is the keyword pool ranked by Opportu
 check `unassignedOnly: true` before proposing new topics so you never
 cannibalize an existing target.
 
+**Keyword research** (the Insights engine's monthly research allowance —
+the same meter the Keywords page spends; a repeat of a query within 30
+days is free): `research_keywords` (ideas + long-tail around a phrase),
+`competitor_keywords` (what any domain ranks for, with positions),
+`gap_keywords` (what a rival ranks for that this site doesn't), `get_serp`
+(one keyword's live top-10, People Also Ask, and the AI Overview's cited
+pages — read it before proposing an article; the page type Google rewards
+is in the results). Every row carries `inPool` so you don't re-propose
+what's already tracked. `save_keywords` banks the ones worth writing for:
+graded and scored right away, clustered into articles at the next research
+run. Ask before spending more than a handful of searches in one session.
+
 **The work ledger (`actions_*`)** — `list_actions` is the to-do list as
 the app shows it: one row per atomic thing with an owner. `owner: "you"`
 rows need a human (answer a cited Reddit thread, fix robots.txt, claim a
@@ -105,11 +117,17 @@ it — pass a `result` note) and `skip_action` (not this one; remembered 60
 days, so don't re-litigate). Reddit rows carry a reply draft — deliver it
 in chat, the user posts it. Never post to third-party sites yourself.
 
-- **Coverage / outreach** lives in the Authority engine: `list_outreach`
-  is the off-page ledger — pages AI answers cite where competitors are
-  named and the brand is absent, ranked by Opportunity, plus threads in
-  flight and won/lost tallies. Sightkick's outreach engine drafts and
-  sends from the user's managed inbox; you read the ledger, you don't send.
+- **Coverage / outreach** lives in the Backlinks engine: `list_outreach`
+  is the off-page ledger — pages AI answers cite, pages linking to rivals,
+  roundups and unlinked mentions, ranked by Opportunity, plus threads in
+  flight and won/lost tallies. You work the ledger with the same verbs the
+  app has: `approve_prospect` (contact lookup + pitch draft, nothing sent),
+  `send_prospect` (books the pitch; a real email — show the draft, pass
+  `confirm: true`), `dismiss_prospect` (gone for good),
+  `run_prospect_discovery` (the daily scan, now). Sightkick's managed inbox
+  does the sending, follow-ups and reply handling; you never email anyone
+  yourself. `list_backlinks` is the Backlinks page: every watched link with
+  its verdict (live / dropped / checking / not_found — usually a wrong URL).
 - **Orders** (`request_action`): fire-and-forget jobs for the pipeline.
   `kind: "write"` creates and front-inserts an article on
   the calendar. Orders run at every dial position; on manual, a written

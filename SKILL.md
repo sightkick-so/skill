@@ -3,8 +3,8 @@ name: sightkick
 description: >-
   Operate Sightkick, the SEO/AI-search (AEO) autopilot, for the user's website.
   Use when the user asks about SEO, ranking on Google, showing up in ChatGPT /
-  Gemini / AI Overviews answers, keyword research, writing or publishing blog
-  articles, refreshing content, off-page coverage, or proving SEO results.
+  Gemini / AI Overviews answers, keyword research, writing, updating or
+  publishing blog articles, off-page coverage, or proving SEO results.
   Works through Sightkick's remote MCP server — reads real Search Console +
   AI-visibility data, writes and scores articles, accepts coverage work,
   steers the calendar and the writing dial, publishes.
@@ -42,7 +42,7 @@ workspace on the consent screen.
    asked for; do surface what you did.
 2. **Know what the autopilot covers before acting.** The plan is visible:
    `list_visibility_gaps` records what the analyzer already decided per losing
-   prompt (`created` / `boosted` / `covered` / `offpage`),
+   prompt (`planned` / `covered` / `offpage`),
    `get_calendar` shows what's scheduled, `list_actions` shows open work.
    Never duplicate the plan — your lane is what it won't do by itself:
    surgical edits now, brand-new themes, off-page pitches, one-off orders.
@@ -51,7 +51,7 @@ workspace on the consent screen.
    dial). The pipeline (`generate_article`, `request_action`) is one tool
    you can choose — the heavy option for full researched articles with
    media — not the only path.
-4. **The rails keep everyone honest:** the five-pillar scorecard before
+4. **The rails keep everyone honest:** the four-pillar scorecard before
    anything ships, the writing dial + confirm gates, and ledger attribution
    ("By: Your agent") on every act.
 
@@ -68,8 +68,11 @@ when the user asks, via `set_autopilot_mode`:
 The dial never gates YOUR tools — reads, edits, generation and orders run at
 every position; it governs only Sightkick's own initiative. `publish_article`
 requires `confirm: true` (the user's actual approval) unless the dial sits
-on autopilot. Sensing (nightly visibility sweeps, weekly keyword research,
-gap analysis, coverage scan, site health) always runs.
+on autopilot. **Moving the dial UP a rung** (manual → drafts, anything →
+autopilot) hands Sightkick more initiative, so it needs `confirm: true` as
+well — ask first, every time. Moving it down never does. Sensing (nightly
+visibility sweeps, weekly keyword research, gap analysis, coverage scan,
+site health) always runs.
 
 ## The jobs and their tools
 
@@ -108,14 +111,17 @@ what's already tracked. `save_keywords` banks the ones worth writing for:
 graded and scored right away, clustered into articles at the next research
 run. Ask before spending more than a handful of searches in one session.
 
-**The work ledger (`actions_*`)** — `list_actions` is the to-do list as
-the app shows it: one row per atomic thing with an owner. `owner: "you"`
-rows need a human (answer a cited Reddit thread, fix robots.txt, claim a
-review profile); `owner: "autopilot"` rows are the machine's own work and
-history. Verbs: `complete_action` (the user, or you on their say-so, did
-it — pass a `result` note) and `skip_action` (not this one; remembered 60
-days, so don't re-litigate). Reddit rows carry a reply draft — deliver it
-in chat, the user posts it. Never post to third-party sites yourself.
+**The owner's to-do list** — `list_actions` is that list as the app shows
+it: one row per atomic thing only a person with the keys can do. A dead
+outbound link to repair, robots.txt or a snippet rule blocking citation,
+one-time plumbing (verify Bing, IndexNow, sitemap), a review or listing
+profile to claim. Dead links only land here on **drafts** and **manual** —
+on autopilot the weekly scan repairs them itself, because below that rung
+nothing touches a live page unasked. Autopilot's own work isn't here —
+`list_activity` is the machine's record. Verbs: `complete_action` (the user,
+or you on their say-so, did it — pass a `result` note) and `skip_action`
+(not this one; remembered 60 days, so don't re-litigate). Never post to
+third-party sites yourself.
 
 - **Coverage / outreach** lives in the Backlinks engine: `list_outreach`
   is the off-page ledger — pages AI answers cite, pages linking to rivals,
@@ -123,8 +129,10 @@ in chat, the user posts it. Never post to third-party sites yourself.
   flight and won/lost tallies. You work the ledger with the same verbs the
   app has: `approve_prospect` (contact lookup + pitch draft, nothing sent),
   `send_prospect` (books the pitch; a real email — show the draft, pass
-  `confirm: true`), `dismiss_prospect` (gone for good),
-  `run_prospect_discovery` (the daily scan, now). Sightkick's managed inbox
+  `confirm: true`), `dismiss_prospect` (gone for good — the whole site goes on the Blocklist),
+  `run_prospect_discovery` (the daily scan, now), `add_prospect` (a page the
+  user names by URL — it skips discovery's filters and the Opportunity
+  floor, and autopilot never pitches it on its own). Sightkick's managed inbox
   does the sending, follow-ups and reply handling; you never email anyone
   yourself. `list_backlinks` is the Backlinks page: every watched link with
   its verdict (live / dropped / checking / not_found — usually a wrong URL).
@@ -137,11 +145,13 @@ in chat, the user posts it. Never post to third-party sites yourself.
 
 1. `create_article_draft` with clean semantic HTML (h2/h3 sections, short
    paragraphs, real links as sources — no styles, no scripts).
-2. `score_article` — five pillars: grounding (cited claims), originality
-   (information gain over what already ranks), AEO (answer-first
-   extractability), intent coverage, readability. Fix the weakest pillar,
-   re-score. **Ship at 80+.** The scorer cannot be flattered; it punishes
-   unsourced claims and thin rewrites.
+2. `score_article` — four pillars: answers the search (the main prompt
+   answered up top, every other prompt and question covered), says something
+   new (information gain over what already ranks), can be trusted (cited
+   claims), easy to quote (answer-first extractability). It also returns a
+   `checklist` — the specific things to fix, by name. Clear the checklist,
+   re-score, repeat until it comes back empty. **Ship at 80+.** The scorer
+   cannot be flattered; it punishes unsourced claims and thin rewrites.
 3. Set `metaTitle`/`metaDescription` via `update_article`, then
    `queue_article` (calendar) or `publish_article`.
 4. Wrote for a theme the panel doesn't track? `track_prompt` (the panel
@@ -156,7 +166,9 @@ back complete via `update_article`.
 
 **"Let the pipeline write"** — `generate_article` runs the staged pipeline
 (research → outline → draft → judge → revise → media). It takes minutes and
-returns immediately; poll `get_article`. Limits: 1 in flight, 5 manual/day.
+returns immediately; poll `get_article`. Limits: 1 in flight, and the plan's
+monthly article budget. The article keeps its calendar day and goes out on
+it — writing ahead means it sits `ready` until then.
 
 **"Operate the machine"** — `get_calendar` / `reschedule_article`
 (insert-and-slide, one article per day), `queue_article` /
@@ -164,8 +176,8 @@ returns immediately; poll `get_article`. Limits: 1 in flight, 5 manual/day.
 `publish_article`.
 
 **"What's the method?"** — `search_guidance` returns Sightkick's methodology
-stance on any topic (refresh-over-new, answer-first structure, schema
-policy, anti-slop rules, gap actions). Consult it before planning or writing.
+stance on any topic (improve-before-you-write, answer-first structure, schema
+policy, anti-slop rules, gap verdicts). Consult it before planning or writing.
 
 ## The plays (named routines the user can invoke)
 
@@ -178,8 +190,9 @@ order. Close with the honest status line — the goal is "nothing else needs
 you."
 
 **Gap fixer** — "fix what you can."
-Read `list_visibility_gaps` and respect what's already covered (`created`/
-`boosted` = planned; `covered` = a published page already targets it). Your
+Read `list_visibility_gaps` and respect what's already covered (`planned` =
+an article for it is in the plan; `covered` = a published page already
+targets it). Your
 moves: strengthen the weak published page yourself (`get_article` →
 edit → `score_article` → `update_article` → `publish_article` to push the
 update in place), write the uncovered theme (BYO loop) or order it
@@ -202,14 +215,14 @@ invented claims) — for the user to send from their own address.
 `list_activity`. Tie outcomes to work: articles published → citations
 appearing → clicks. Cold-start sites: citations and indexation move before
 clicks — say so instead of dressing up small numbers. Failures are
-reportable too: a refresh the guard discarded ("rewrite scored 71 vs 83")
-is the quality rails working, not a problem to hide.
+reportable too: a draft the scorer sent back ("71, unsourced claims in two
+sections") is the quality rails working, not a problem to hide.
 
 ## How to talk (reply shape)
 
 Numbers first, verdict second, plan third. Narrate multi-step plans in one
-breath before acting ("On it — ordering the refresh, then drafting the
-Zapier pitch"). Every act ends with its artifact: where the user can see it
+breath before acting ("On it — rewriting the lead on the Zapier piece, then
+drafting the pitch"). Every act ends with its artifact: where the user can see it
 in Sightkick (board, calendar, article, live URL). State windows honestly
 ("this week", "28 days"). No hedging, no metric soup — three numbers that
 matter beat ten that don't.
@@ -219,10 +232,11 @@ matter beat ten that don't.
 - **Answer-first wins AI retrieval.** Engines cite passages, not pages: the
   direct answer belongs in the first 30% of the article and of each section;
   H2s should stand alone as questions/answers.
-- **Refresh beats new.** A published article at Google position 8–20 with
-  impressions is the highest-ROI work available — improve it before writing
-  a near-duplicate. Sightkick's own refresh loop does one per week; you can
-  do more via `update_article` or order one via `request_action`.
+- **Improving beats writing new.** A published article at Google position
+  8–20 with impressions is the highest-ROI work available — improve it
+  before writing a near-duplicate. Nothing rewrites a live page on its own,
+  so this one is yours: `get_article` → edit → `score_article` →
+  `update_article` → `publish_article` to push the update in place.
 - **No slop, ever.** Every article needs an information edge: first-hand
   data, real experience, a defensible stance. If a draft only restates what
   already ranks, improve it or drop it — the score's originality pillar will
@@ -234,11 +248,14 @@ matter beat ten that don't.
 ## Safety rules (non-negotiable)
 
 - `publish_article` with `confirm: true` must represent the user's actual
-  approval when the dial isn't on autopilot. Never auto-confirm.
+  approval when the dial isn't on autopilot. `set_autopilot_mode` with
+  `confirm: true` must represent it when the dial moves up a rung. Never
+  auto-confirm either.
 - Never post, send, or submit anything to third-party sites — coverage
   pitches are drafted for the user to send themselves.
-- Respect the caps (they protect the user's spend): generation 1 in-flight /
-  5 per day, scoring 25 per day, 20 open orders.
+- Respect the caps (they protect the user's spend): generation 1 in-flight
+  and the plan's monthly article budget, scoring 25 per day, writes 20 per
+  hour, 20 open orders.
 - Every write you make is logged, attributed to you, in the workspace's
   activity feed and on the Actions board — the user sees it. Act accordingly.
 

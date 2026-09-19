@@ -3,8 +3,8 @@
 Teach your AI agent to run SEO and AI-search visibility (AEO) for your
 website through [Sightkick](https://sightkick.so) — the autopilot that
 researches keywords, writes and publishes articles daily, tracks how ChatGPT,
-Gemini and Google's AI answer your buyers' prompts, refreshes
-underperformers, and proves results with Search Console data.
+Gemini and Google's AI answer your buyers' prompts, pitches for a place on
+the pages those answers cite, and proves results with Search Console data.
 
 With this skill installed, your agent (Claude Code, Claude Desktop, ChatGPT,
 Cursor) can:
@@ -12,9 +12,9 @@ Cursor) can:
 - read your real Search Console + AI-visibility data and explain it —
   including the pages AI answers cite and the prompts you're losing
 - write articles itself on your subscription — and grade them against
-  Sightkick's five-pillar scorer until they're worth publishing
-- work the Actions board: accept coverage cards (pages AI cites where your
-  competitors are listed and you're not) and draft the pitches for you
+  Sightkick's four-pillar scorer until they're worth publishing
+- work the off-page ledger: prospects (pages AI cites where your
+  competitors are listed and you're not) and the pitches for them
 - order work from the pipeline, steer the calendar and the writing dial,
   start tracking new prompts, publish (confirm-gated)
 - run four named plays on request: **weekly pulse · gap fixer · coverage

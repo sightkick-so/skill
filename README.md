@@ -1,56 +1,42 @@
-# Sightkick agent skill
+# Sightkick skill — retired
 
-Teach your AI agent to run SEO and AI-search visibility (AEO) for your
-website through [Sightkick](https://sightkick.so) — the autopilot that
-researches keywords, writes and publishes articles daily, tracks how ChatGPT,
-Gemini and Google's AI answer your buyers' prompts, pitches for a place on
-the pages those answers cite, and proves results with Search Console data.
+> **This skill is retired (2026-09-20) and no longer maintained.** Nothing here
+> needs to be installed. Its playbook now ships inside the Sightkick MCP server
+> itself, in the protocol's `instructions` field, so **every** client gets it on
+> connect — including claude.ai and ChatGPT connectors, which could never
+> install a skill file.
 
-With this skill installed, your agent (Claude Code, Claude Desktop, ChatGPT,
-Cursor) can:
+## What to do instead
 
-- read your real Search Console + AI-visibility data and explain it —
-  including the pages AI answers cite and the prompts you're losing
-- write articles itself on your subscription — and grade them against
-  Sightkick's four-pillar scorer until they're worth publishing
-- work the off-page ledger: prospects (pages AI cites where your
-  competitors are listed and you're not) and the pitches for them
-- order work from the pipeline, steer the calendar and the writing dial,
-  start tracking new prompts, publish (confirm-gated)
-- run four named plays on request: **weekly pulse · gap fixer · coverage
-  pitch · proof report**
-- do it all attributably: every agent action shows up on your Actions board
-  and activity feed as "Your agent"
+Just connect the MCP server. There is nothing else to install.
 
-## Install
+```sh
+claude mcp add --transport http sightkick https://app.sightkick.so/mcp
+```
 
-The skill is the manual; the hands are Sightkick's remote MCP server.
+For any other client — Claude desktop and claude.ai, ChatGPT, Cursor, VS Code —
+add a custom or remote MCP server and paste the same endpoint. There is no API
+key; the first call opens a sign-in, and one OAuth grant is bound to one
+workspace.
 
-1. Get a Sightkick account at [app.sightkick.so](https://app.sightkick.so)
-   (agent access is included in every plan).
-2. Connect the MCP — e.g. for Claude Code:
+Your agent receives the operating playbook automatically: the writing dial and
+its rails, the division of labour with Sightkick's own autopilot, the named
+plays (weekly pulse, gap fixer, coverage pitch, proof report), and how to
+report. The `search_guidance` tool returns Sightkick's SEO/AEO method on demand.
 
-   ```sh
-   claude mcp add --transport http sightkick https://app.sightkick.so/mcp
-   ```
+## Why it was retired
 
-3. Install this skill so your agent knows how to use it well:
-
-   ```sh
-   npx skills add sightkick-so/skill
-   ```
-
-The OAuth consent binds the connection to one workspace (one website).
-
-## What's in here
-
-- [`SKILL.md`](SKILL.md) — the agent-facing manual: tools by job, the
-  writing/scoring loop, method rules, safety rules.
-- [`workspace/`](workspace/) — your agent's persistent working memory for
-  this site. Yours, git-ignorable, survives skill updates.
+A skill file only reaches agents with a local filesystem, so most clients never
+saw it. Most of its content repeated what the tool descriptions and
+`search_guidance` already say. And it was the one description of the tool
+catalog that shipped outside the product's deploy, so it went stale twice while
+the server it described had already moved on.
 
 ## Links
 
-- Agent guide (for LLM consumption): <https://sightkick.so/llm-info>
-- MCP server card: <https://app.sightkick.so/.well-known/mcp/server-card.json>
-- Product: <https://sightkick.so>
+- [Server page](https://sightkick.so/mcp)
+- [Agent guide](https://sightkick.so/llm-info)
+- [MCP server repo](https://github.com/sightkick-so/mcp) — registry entry and tool catalog
+- [sightkick.so](https://sightkick.so)
+
+MIT © Sprike LLC (Sightkick)
